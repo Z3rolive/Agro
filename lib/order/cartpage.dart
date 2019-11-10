@@ -17,6 +17,7 @@ class _CartPageState extends State<CartPage> {
   var url = "http://192.168.100.41/agro/appApi/order.php";
   @override
   Widget build(BuildContext context) {
+    final username=ScopedModel.of<CartModel>(context, rebuildOnChange: false).useremail;
     cartTotal() {
       totalAm = ScopedModel.of<CartModel>(context, rebuildOnChange: true)
           .totalCartValue;
@@ -27,12 +28,6 @@ class _CartPageState extends State<CartPage> {
                               rebuildOnChange: true)
                           .total;
                   return itemCount;
-    }
-    userDefine(){
-      username= ScopedModel.of<CartModel>(context,
-                              rebuildOnChange: true)
-                          .useremail;
-                    return username;
     }
     return Scaffold(
       appBar: AppBar(
@@ -126,14 +121,20 @@ class _CartPageState extends State<CartPage> {
                               "amount": "\$" + (model.cart[i].qty *
                                           model.cart[i].price)
                                           .toString(),
-                              "farmer_email": '${userDefine()}',
+                              "farmer_email": '$username',
                               
                             },
                             
                             );
-                            print("Order Placed!");
+                            print(model.cart[i].title);
+                            print ((model.cart[i].qty).toString(),);
+                            print((model.cart[i].qty *
+                                          model.cart[i].price)
+                                          .toString(),);
+                                          print('$username');
+                            print("Order $i Placed!");
                           }
-                          Navigator.popAndPushNamed(context, '/order');
+                          Navigator.pop(context, '/order');
                           model.clearCart();
                           
                         },

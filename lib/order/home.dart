@@ -129,7 +129,9 @@ class _HomePageState extends State<HomePage> {
           return ScopedModelDescendant<CartModel>(
               builder: (context, child, model) {
             return Card(  
-              child: Column( children: <Widget>[
+              child: Column( 
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: <Widget>[
               Image.asset(allProducts[index].imgUrl, height: 100, width: 100,),
               Text(allProducts[index].title, style: TextStyle(fontWeight: FontWeight.bold),),
               Text("\$"+allProducts[index].price.toString()),

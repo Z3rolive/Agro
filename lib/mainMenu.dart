@@ -1,15 +1,19 @@
 import 'dart:io';
 import 'package:agro/constants/constant.dart';
 import 'package:agro/order/cartmodel.dart';
-import 'package:agro/order/home.dart';
 import 'package:agro/pages/aboutpage.dart';
 import 'package:agro/pages/newspage.dart';
-import 'package:agro/pages/querypage.dart';
+import 'package:http/http.dart' as http;
+import 'package:agro/screens/notification_screen.dart';
+import 'package:agro/screens/home_menu.dart';
+import 'package:agro/screens/order_screen.dart';
+import 'package:agro/screens/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:bubble_bottom_bar/bubble_bottom_bar.dart';
 
 class MainMenu extends StatefulWidget {
   final VoidCallback signOut;
@@ -21,116 +25,74 @@ class MainMenu extends StatefulWidget {
 }
 
 class _MainMenuState extends State<MainMenu> {
+String email="", name="", id="", userid;  
   signOut() {
     setState(() {
       widget.signOut();
     });
   }
-
-  String email = "", name = "", id = "";
-  TabController tabController;
-
-  getPref() async {
+  
+getPref() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     setState(() {
       id = preferences.getString("id");
       email = preferences.getString("email");
       name = preferences.getString("name");
+      
     });
     print("id" + id);
     print("user" + email);
     print("name" + name);
+    ScopedModel.of<CartModel>(context).setUser(preferences.getString("email"));
+    print(ScopedModel.of<CartModel>(context, rebuildOnChange: false).useremail);
   }
-  @override
+@override
   void initState() {
+    // TODO: implement initState
     super.initState();
     getPref();
+    
   }
+ int bottomSelectedIndex=0;
+   void pageChanged(int index) {
+    setState(() {
+      bottomSelectedIndex = index;
+    });
+  }
+  PageController pageController = PageController(
+  initialPage: 0,
+  keepPage: true,
+);
 
+Widget buildPageView() {
+  return PageView(
+    controller: pageController,
+    onPageChanged: (index) {
+      pageChanged(index);
+    },
+    children: <Widget>[
+      HomeMenu(),
+      Database(),
+      NotificationScreen(),
+      ProfilePage(),
+    ],
+  );
+}
+
+void bottomTapped(int index) {
+    setState(() {
+      bottomSelectedIndex = index;
+      pageController.animateToPage(index, duration: Duration(milliseconds: 500), curve: Curves.ease);
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-          child: Scaffold(
-        body: CustomScrollView(
-          slivers: <Widget>[
-          SliverAppBar(
-            expandedHeight: 200.0,
-            flexibleSpace: const FlexibleSpaceBar(
-              
-              title: Text("Home",
-                      style: TextStyle(
-                        color: Colors.green,
-                        fontSize: 24.0,
-                      )),
-                      background: Image(image: AssetImage('assets/Header.png'),
-                      fit: BoxFit.cover,),
-            ),
-
-            actions: <Widget>[
-              IconButton(
-                icon: const Icon(Icons.add_circle),
-                tooltip: 'Add new entry',
-                onPressed: () {},
-              ),
-            ],
-            floating: true,
-            pinned: true,
-            elevation: 0,
-          ),
-          
-          SliverFillRemaining(
-            
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                SizedBox(height: 20),
-                  
-                    Text('Talk to Expert', style: kTitleStyle,),
-                    Text('If you have any queries about something,'+
-                     'you can post ask your query to the expert along with the photo. Just press the button Below to post your query.', style: kSubtitleStyle,),
-                    Align(
-                      alignment: Alignment.center,
-                                          child: RaisedButton(
-                        color: Colors.orange,
-                      child: Text('Ask query'),
-                        onPressed: (){
-                          Navigator.pushNamed(context, '/query', arguments: email);
-                        },
-                      ),
-                    ),
-                  SizedBox(height: 30,),
-                Text('Order Materials', style: kTitleStyle,),
-                Text('Press the button below to view and order materials. '),
-                Align(
-                      alignment: Alignment.center,
-                                          child: RaisedButton(
-                        color: Colors.orange,
-                      child: Text('Order'),
-                        onPressed: (){
-                          Navigator.pushNamed(context, '/order', arguments: email);
-                        },
-                      ),
-                    ),
-                    Text('View Documentations', style: kTitleStyle,),
-                    Text('Documents are available on how to grow particular plants.'),
-                     Align(
-                      alignment: Alignment.center,
-                                          child: RaisedButton(
-                        color: Colors.orange,
-                      child: Text('View Documents'),
-                        onPressed: (){
-                          Navigator.pushNamed(context, '/library');
-                        },
-                      ),
-                    ),
-              ],),
-            ),
-          ),
-        ],
-      ),
-        
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('NepaFarm'),
+        ),
+        body: buildPageView(),
         drawer: Drawer(
           elevation: 0,
           child: ListView(
@@ -139,8 +101,7 @@ class _MainMenuState extends State<MainMenu> {
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     fit: BoxFit.cover,
-                    image: AssetImage(
-                        'assets/drawer.jpg'),
+                    image: AssetImage('assets/drawer.jpg'),
                   ),
                 ),
                 accountName: Text('$name',
@@ -163,7 +124,8 @@ class _MainMenuState extends State<MainMenu> {
                   ),
                   trailing: Icon(Icons.arrow_right),
                   onTap: () {
-                    Navigator.of(context).pushNamed('/query',arguments: email);
+                    Navigator.of(context).pushNamed('/query');
+                    
                   }),
               GreenDivider(),
               ListTile(
@@ -175,8 +137,8 @@ class _MainMenuState extends State<MainMenu> {
                   ),
                   trailing: Icon(Icons.arrow_right),
                   onTap: () {
-                    Navigator.of(context).pushNamed('/order', arguments: email);
-                    ScopedModel.of<CartModel>(context).setUser(email); 
+                    Navigator.of(context).pushNamed('/order');
+                    ScopedModel.of<CartModel>(context).setUser(("$email"));
                   }),
               GreenDivider(),
               ListTile(
@@ -188,7 +150,7 @@ class _MainMenuState extends State<MainMenu> {
                   ),
                   trailing: Icon(Icons.arrow_right),
                   onTap: () {
-                    Navigator.of(context).pushNamed('/library'); 
+                    Navigator.of(context).pushNamed('/library');
                   }),
               GreenDivider(),
               ListTile(
@@ -200,8 +162,8 @@ class _MainMenuState extends State<MainMenu> {
                   ),
                   trailing: Icon(Icons.arrow_right),
                   onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => NewsPage()));
+                    Navigator.pushNamed(context,'/news');
+                        
                   }),
               GreenDivider(),
               ListTile(
@@ -244,66 +206,86 @@ class _MainMenuState extends State<MainMenu> {
             ],
           ),
         ),
-      ),
-    );
-    
-    /* Scaffold(
-      appBar: AppBar(
-        actions: <Widget>[
-          IconButton(
-            onPressed: () {
-              signOut();
-            },
-            icon: Icon(Icons.lock_open),
-          )
-        ],
-      ),
-      body: Center(
-        child: Text(
-          "WelCome",
-          style: TextStyle(fontSize: 30.0, color: Colors.blue),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            pageController.animateToPage(2, duration: Duration(milliseconds: 500), curve: Curves.ease);
+          },
+          child: Icon(LineIcons.bell),
+          backgroundColor: Colors.orange,
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+        bottomNavigationBar: BubbleBottomBar(
+          opacity: .2,
+          currentIndex: bottomSelectedIndex,
+          onTap:(index){
+            pageChanged(index);
+            bottomTapped(index);
+          },
+          borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+          elevation: 8,
+          fabLocation: BubbleBottomBarFabLocation.end, //new
+          hasNotch: true, //new
+          hasInk: true, //new, gives a cute ink effect
+          inkColor:
+              Colors.black12, //optional, uses theme color if not specified
+          items: <BubbleBottomBarItem>[
+            BubbleBottomBarItem(
+                backgroundColor: Colors.red,
+                icon: Icon(
+                  Icons.dashboard,
+                  color: Colors.black,
+                ),
+                activeIcon: Icon(
+                  Icons.dashboard,
+                  color: Colors.red,
+                ),
+                title: Text("Home")),
+            BubbleBottomBarItem(
+                backgroundColor: Colors.deepPurple,
+                icon: Icon(
+                  Icons.shopping_cart,
+                  color: Colors.black,
+                ),
+                activeIcon: Icon(
+                  Icons.shopping_cart,
+                  color: Colors.deepPurple,
+                ),
+                title: Text("Orders")),
+            BubbleBottomBarItem(
+                backgroundColor: Colors.indigo,
+                icon: Icon(
+                  LineIcons.bell,
+                  color: Colors.black,
+                ),
+                activeIcon: Icon(
+                  LineIcons.bell,
+                  color: Colors.indigo,
+                ),
+                title: Text("Notifications")),
+            BubbleBottomBarItem(
+                backgroundColor: Colors.green,
+                icon: Icon(
+                  LineIcons.user,
+                  color: Colors.black,
+                ),
+                activeIcon: Icon(
+                  LineIcons.user,
+                  color: Colors.green,
+                ),
+                title: Text("Profile"))
+          ],
         ),
       ),
-      bottomNavigationBar: BottomNavyBar(
-        backgroundColor: Colors.black,
-        iconSize: 30.0,
-//        iconSize: MediaQuery.of(context).size.height * .60,
-        currentIndex: currentIndex,
-        onItemSelected: (index) {
-          setState(() {
-            currentIndex = index;
-          });
-          selectedIndex = 'TAB: $currentIndex';
-//            print(selectedIndex);
-          reds(selectedIndex);
-        },
-
-        items: [
-          BottomNavyBarItem(
-              icon: Icon(Icons.home),
-              title: Text('Home'),
-              activeColor: Color(0xFFf7d426)),
-          BottomNavyBarItem(
-              icon: Icon(Icons.view_list),
-              title: Text('List'),
-              activeColor: Color(0xFFf7d426)),
-          BottomNavyBarItem(
-              icon: Icon(Icons.person),
-              title: Text('Profile'),
-              activeColor: Color(0xFFf7d426)),
-        ],
-      ),
-    ); */
+    );
   }
-void _showExitDialog() {
+
+  void _showExitDialog() {
     showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10)
-              
-            ),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             title: Text('Confirm Exit'),
             content: Text('Are you sure you want to exit?'),
             actions: <Widget>[
@@ -321,24 +303,22 @@ void _showExitDialog() {
             ],
           );
         });
-        
- 
   }
+
   _dismissDialog() {
     Navigator.pop(context);
   }
 
-void _showLogOutDialog() {
+  void _showLogOutDialog() {
     showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10)
-              
-            ),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             title: Text('Confirm Signout'),
-            content: Text('You will no longer be signed in. Do you wish to continue?'),
+            content: Text(
+                'You will no longer be signed in. Do you wish to continue?'),
             actions: <Widget>[
               FlatButton(
                   onPressed: () {
@@ -355,9 +335,8 @@ void _showLogOutDialog() {
             ],
           );
         });
-        
- 
   }
+
   callToast(String msg) {
     Fluttertoast.showToast(
         msg: "$msg",

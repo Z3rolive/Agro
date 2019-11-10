@@ -95,7 +95,8 @@ class _LoginState extends State<Login> {
     setState(() {
       value = preferences.getInt("value");
 
-      _loginStatus = value == 1 ? LoginStatus.signIn : LoginStatus.notSignIn;
+      _loginStatus = value == 1 ? LoginStatus.signIn
+       : LoginStatus.notSignIn;
     });
   }
   
@@ -145,10 +146,10 @@ class _LoginState extends State<Login> {
                             height: 100,
                             width: 100,
                             decoration: BoxDecoration(
+                              shape: BoxShape.circle,
                               image: DecorationImage(
-                                image: AssetImage('assets/logo2.png'),
+                                image: AssetImage('assets/logo3.png'),
                               ),
-                              borderRadius: BorderRadius.circular(12),
                             ),
                           ),
                           /* CircleAvatar(

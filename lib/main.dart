@@ -1,7 +1,6 @@
 import 'package:agro/order/cartmodel.dart';
 import 'package:agro/screens/onboardingscreen.dart';
 import 'package:agro/sharedloginregister.dart';
-import 'package:provider/provider.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'dart:async';
 import 'router_constants.dart';
@@ -9,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-void main() => runApp(MyApp(model: CartModel(),));
+void main() => runApp(MyApp());
 
 class Splash extends StatefulWidget {
 @override
@@ -50,14 +49,11 @@ Widget build(BuildContext context) {
 }
 
 class MyApp extends StatelessWidget {
-  final CartModel model;
-
-   const MyApp({Key key, @required this.model}) : super(key: key);
   
   @override
   Widget build(BuildContext context) {
     return ScopedModel<CartModel>(
-      model: model,
+      model: CartModel(),
     child: MaterialApp(
       theme: ThemeData(fontFamily: 'Abel',
       brightness: Brightness.dark,

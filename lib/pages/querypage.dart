@@ -1,3 +1,4 @@
+import 'package:agro/order/cartmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
@@ -5,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'dart:convert';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class AddData extends StatefulWidget {
   final value;
@@ -16,6 +18,7 @@ class AddData extends StatefulWidget {
 class _AddDataState extends State<AddData> {
   TextEditingController controllerquery = new TextEditingController();
   TextEditingController controllerimage = new TextEditingController();
+  String username="";
   final String uploadEndPoint =
       'http://192.168.100.41/agro/images/upload_image.php';
   //for storing imported image
@@ -109,13 +112,19 @@ uploadToast(String toast) {
       setStatus(error);
     });
   }
+  userDefine(){
+      username= ScopedModel.of<CartModel>(context,
+                              rebuildOnChange: true)
+                          .useremail;
+                    return username;
+    }
 
   void addData() {
     var url = "http://192.168.100.41/agro/appApi/adddata.php";
     http.post(url, body: {
       "query": controllerquery.text,
       "image_url": '$imageName',
-      "added_by": '${widget.value}',
+      "added_by": '${userDefine()}',
     });
     uploadToast('Query Posted');
 Future.delayed(new Duration(milliseconds: 1000), ()

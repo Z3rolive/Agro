@@ -17,7 +17,7 @@ class RouteGenerator {
       case SplashRoute:
         return MaterialPageRoute(builder: (context) => Splash());
       case QueryRoute:
-        return MaterialPageRoute(builder: (context) => AddData(value: args,));
+        return MaterialPageRoute(builder: (context) => AddData());
       case LoginRoute:
         return MaterialPageRoute(builder: (context) => Login());
       case OrderRoute:

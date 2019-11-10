@@ -12,6 +12,12 @@ final kSubtitleStyle = TextStyle(
   fontSize: 18.0,
   height: 1.2,
 );
+final kSubtitleStyleBold = TextStyle(
+  color: Colors.white,
+  fontSize: 18.0,
+  height: 1.2,
+  fontWeight: FontWeight.bold
+);
 const kTileTitleStyle = TextStyle(fontSize: 15);
 final Color iconColor = Color(0xff27ae60);
 
