@@ -1,14 +1,16 @@
 import 'package:agro/main.dart';
 import 'package:agro/mainMenu.dart';
-import 'package:agro/order/home.dart';
+import 'package:agro/monitoring_part.dart/home.dart';
+import 'package:agro/order/product_home.dart';
 import 'package:agro/pages/aboutpage.dart';
 import 'package:agro/pages/librarypage.dart';
 import 'package:agro/pages/newspage.dart';
 import 'package:agro/pages/querypage.dart';
-import 'package:agro/router_constants.dart';
-import 'package:agro/sharedloginregister.dart';
+import 'package:agro/routes/router_constants.dart';
+import 'package:agro/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:agro/pages/error_page.dart';
+import 'package:agro/pages/answer_page.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -28,6 +30,10 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (context) => NewsPage());
       case LibraryRoute:
       return MaterialPageRoute(builder: (context) => LibraryPage());
+      case AnswerRoute:
+      return MaterialPageRoute(builder: (context) => Query());
+      case MonitorRoute:
+      return MaterialPageRoute(builder: (context)=>Home());
       default:
         return MaterialPageRoute(builder: (context) => Error());
     }

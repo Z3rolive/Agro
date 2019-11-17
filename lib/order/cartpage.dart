@@ -1,6 +1,7 @@
-import 'package:agro/order/cartmodel.dart';
+import 'package:agro/models/cartmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 
 class CartPage extends StatefulWidget {
@@ -14,10 +15,12 @@ class _CartPageState extends State<CartPage> {
   String username;
   double totalAm;
   var itemCount=0;
-  var url = "http://192.168.100.41/agro/appApi/order.php";
+  var url = "http://192.168.0.108/agro/appApi/order.php";
+  var url2="http://192.168.0.108/agro/appApi/totalOrder.php";
   @override
   Widget build(BuildContext context) {
     final username=ScopedModel.of<CartModel>(context, rebuildOnChange: false).useremail;
+    final uid=ScopedModel.of<CartModel>(context, rebuildOnChange: false).userid;
     cartTotal() {
       totalAm = ScopedModel.of<CartModel>(context, rebuildOnChange: true)
           .totalCartValue;
@@ -31,7 +34,6 @@ class _CartPageState extends State<CartPage> {
     }
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.indigo,
         title: Text("Cart"),
         actions: <Widget>[
           FlatButton(
@@ -39,7 +41,10 @@ class _CartPageState extends State<CartPage> {
                 "Clear",
                 style: TextStyle(color: Colors.white),
               ),
-              onPressed: () => ScopedModel.of<CartModel>(context).clearCart())
+              onPressed: () {
+                ScopedModel.of<CartModel>(context).clearCart();
+                orderToast('Cart Cleared');
+              } )
         ],
       ),
       body: ScopedModel.of<CartModel>(context, rebuildOnChange: true)
@@ -122,9 +127,7 @@ class _CartPageState extends State<CartPage> {
                                           model.cart[i].price)
                                           .toString(),
                               "farmer_email": '$username',
-                              
                             },
-                            
                             );
                             print(model.cart[i].title);
                             print ((model.cart[i].qty).toString(),);
@@ -134,9 +137,14 @@ class _CartPageState extends State<CartPage> {
                                           print('$username');
                             print("Order $i Placed!");
                           }
+                          http.post(url2, body: {
+                            "farmer_email" :'$username',
+                            "total_cost" : '$totalAm',
+                            "farmer_uid" : '$uid'
+                          });
                           Navigator.pop(context, '/order');
+                          orderToast('Your order has been placed!');
                           model.clearCart();
-                          
                         },
                       );
                           }
@@ -147,5 +155,13 @@ class _CartPageState extends State<CartPage> {
             ),
             
     );
+  }
+  orderToast(String toast) {
+    return Fluttertoast.showToast(
+        msg: toast,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Color(0xff21C58E),
+        textColor: Colors.white);
   }
 }

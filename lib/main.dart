@@ -1,11 +1,11 @@
-import 'package:agro/order/cartmodel.dart';
+import 'package:agro/models/cartmodel.dart';
 import 'package:agro/screens/onboardingscreen.dart';
-import 'package:agro/sharedloginregister.dart';
+import 'package:agro/login_page.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'dart:async';
-import 'router_constants.dart';
+import 'routes/router_constants.dart';
 import 'package:flutter/material.dart';
-import 'router.dart';
+import 'routes/router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() => runApp(MyApp());
@@ -57,8 +57,8 @@ class MyApp extends StatelessWidget {
     child: MaterialApp(
       theme: ThemeData(fontFamily: 'Abel',
       brightness: Brightness.dark,
-      scaffoldBackgroundColor: Color(0xff545F55),
-      primaryColor: Color(0xff545F55),
+      scaffoldBackgroundColor: Color(0xff696969),
+      primaryColor: Color(0xff696969),
       ),
       debugShowCheckedModeBanner: false,
       onGenerateRoute: RouteGenerator.generateRoute,

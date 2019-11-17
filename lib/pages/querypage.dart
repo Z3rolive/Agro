@@ -1,4 +1,4 @@
-import 'package:agro/order/cartmodel.dart';
+import 'package:agro/models/cartmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
@@ -20,7 +20,7 @@ class _AddDataState extends State<AddData> {
   TextEditingController controllerimage = new TextEditingController();
   String username="";
   final String uploadEndPoint =
-      'http://192.168.100.41/agro/images/upload_image.php';
+      'http://192.168.0.108/agro/images/upload_image.php';
   //for storing imported image
   Future<File> file;
   //for displaying status
@@ -120,7 +120,7 @@ uploadToast(String toast) {
     }
 
   void addData() {
-    var url = "http://192.168.100.41/agro/appApi/adddata.php";
+    var url = "http://192.168.0.108/agro/appApi/adddata.php";
     http.post(url, body: {
       "query": controllerquery.text,
       "image_url": '$imageName',

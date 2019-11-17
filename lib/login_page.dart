@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:agro/mainMenu.dart';
-import 'package:agro/order/cartmodel.dart';
+import 'package:agro/models/cartmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
@@ -37,7 +37,7 @@ class _LoginState extends State<Login> {
 
   login() async {
     final response = await http
-        .post("http://192.168.100.41/agro/appApi/api_verification.php", body: {
+        .post("http://192.168.0.108/agro/appApi/api_verification.php", body: {
       "flag": 1.toString(),
       "email": email,
       "password": password,
@@ -52,10 +52,8 @@ class _LoginState extends State<Login> {
 
     if (value == 1) {
       setState(() {
-        
         _loginStatus = LoginStatus.signIn;
         savePref(value, emailAPI, nameAPI, id);
-        
       });
       print(message);
       loginToast(message);
@@ -244,7 +242,6 @@ class _LoginState extends State<Login> {
                           SizedBox(
                             height: 12,
                           ),
-
                           FlatButton(
                             onPressed: null,
                             child: Text(
@@ -340,7 +337,7 @@ class _RegisterState extends State<Register> {
 
   save() async {
     final response = await http
-        .post("http://192.168.100.41/projectdb/api_verification.php", body: {
+        .post("http://192.168.0.108/projectdb/api_verification.php", body: {
       "flag": 2.toString(),
       "name": name,
       "email": email,

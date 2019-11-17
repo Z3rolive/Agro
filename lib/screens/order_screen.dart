@@ -1,4 +1,4 @@
-import 'package:agro/order/cartmodel.dart';
+import 'package:agro/models/cartmodel.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:http/http.dart' as http;
@@ -20,20 +20,21 @@ class _DatabaseState extends State<Database> {
     
   }
   postUser(){
-    var url = "http://192.168.100.41/agro/appApi/getOrder.php";
+    var url = "http://192.168.0.108/agro/appApi/getOrder.php";
     user=ScopedModel.of<CartModel>(context, rebuildOnChange: false).useremail;
     http.post(url, body: {
       "Email":"$user"
     });
   }
   Future<List> getData() async {
-    final response = await http.get('http://192.168.100.41/agro/appApi/getOrder.php');
+    final response = await http.get('http://192.168.0.108/agro/appApi/getOrder.php');
     return jsonDecode(response.body);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: FutureBuilder<List>(
         future: getData(),
         builder: (context, snapshot) {
@@ -63,6 +64,7 @@ class ItemList extends StatelessWidget {
       itemBuilder: (context, i) {
         final x = list[i];
         return Card(
+          color: Color(0xff6B8E23),
           child: ListTile(
             leading: Icon(LineIcons.shopping_cart),
             title: Text('Item: '+x['plant_name']),

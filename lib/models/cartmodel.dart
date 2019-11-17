@@ -1,10 +1,11 @@
 import 'dart:convert';
-
-import 'package:agro/order/product.dart';
-import 'package:agro/order/product_repository.dart';
-import 'package:agro/screens/order_screen.dart';
-import 'package:http/http.dart';
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:agro/models/product.dart';
+import 'package:agro/Repositories/product_repository.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CartModel extends Model {
   List<Product> _availableProducts;
@@ -16,13 +17,12 @@ class CartModel extends Model {
   double totalCartValue = 0;
   double totalCount = 0;
   int cartIndex = 0;
-  var useremail = "";
+  String userid, useremail;
 
   int get total => cart.length;
   void indexCountAdd() {
     totalCount = totalCount + 1;
   }
-
   void indexCountRemove() {
     totalCount = totalCount - 1;
   }
@@ -108,5 +108,17 @@ class CartModel extends Model {
   void setUser(email) {
     useremail = email;
     notifyListeners();
+  }
+  void setid(id){
+    userid=id;
+    notifyListeners();
+  }
+  cartToast(String toast) {
+    return Fluttertoast.showToast(
+        msg: toast,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.deepOrangeAccent,
+        textColor: Colors.white);
   }
 }

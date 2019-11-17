@@ -1,6 +1,9 @@
 import 'package:agro/constants/constant.dart';
+import 'package:agro/models/cartmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:scoped_model/scoped_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({Key key}) : super(key: key);
@@ -22,7 +25,7 @@ class ProfilePage extends StatelessWidget {
                 padding: EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
-                  color: Color(0xffFDAC32),
+                  color: Color(0xffFF6347),
                 ),
                 width: double.infinity,
                 alignment: Alignment.centerLeft,
@@ -30,10 +33,10 @@ class ProfilePage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text('Fullname'),
-                    Text('Sarah Carter', style: kSubtitleStyleBold,),
+                    Text('Sarah', style: kSubtitleStyleBold),
                     Divider(),
                     Text('Email'),
-                    Text('carters@gmail.com', style: kSubtitleStyleBold,),
+                    Text(ScopedModel.of<CartModel>(context, rebuildOnChange: false).useremail, style: kSubtitleStyleBold,),
                     Divider(),
                     Text('Designation'),
                     Text('User',style: kSubtitleStyleBold,)

@@ -1,9 +1,8 @@
 import 'dart:io';
 import 'package:agro/constants/constant.dart';
-import 'package:agro/order/cartmodel.dart';
+import 'package:agro/models/cartmodel.dart';
+import 'package:agro/monitoring_part.dart/home.dart';
 import 'package:agro/pages/aboutpage.dart';
-import 'package:agro/pages/newspage.dart';
-import 'package:http/http.dart' as http;
 import 'package:agro/screens/notification_screen.dart';
 import 'package:agro/screens/home_menu.dart';
 import 'package:agro/screens/order_screen.dart';
@@ -25,66 +24,69 @@ class MainMenu extends StatefulWidget {
 }
 
 class _MainMenuState extends State<MainMenu> {
-String email="", name="", id="", userid;  
+  String email = "", name = "", id = "", userid;
   signOut() {
     setState(() {
       widget.signOut();
     });
   }
-  
-getPref() async {
+
+  getPref() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     setState(() {
       id = preferences.getString("id");
       email = preferences.getString("email");
       name = preferences.getString("name");
-      
     });
     print("id" + id);
     print("user" + email);
     print("name" + name);
     ScopedModel.of<CartModel>(context).setUser(preferences.getString("email"));
+    ScopedModel.of<CartModel>(context).setid(preferences.getString("id"));
     print(ScopedModel.of<CartModel>(context, rebuildOnChange: false).useremail);
   }
-@override
+
+  @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getPref();
-    
   }
- int bottomSelectedIndex=0;
-   void pageChanged(int index) {
+
+  int bottomSelectedIndex = 0;
+  void pageChanged(int index) {
     setState(() {
       bottomSelectedIndex = index;
     });
   }
+
   PageController pageController = PageController(
-  initialPage: 0,
-  keepPage: true,
-);
-
-Widget buildPageView() {
-  return PageView(
-    controller: pageController,
-    onPageChanged: (index) {
-      pageChanged(index);
-    },
-    children: <Widget>[
-      HomeMenu(),
-      Database(),
-      NotificationScreen(),
-      ProfilePage(),
-    ],
+    initialPage: 0,
+    keepPage: true,
   );
-}
 
-void bottomTapped(int index) {
+  Widget buildPageView() {
+    return PageView(
+      controller: pageController,
+      onPageChanged: (index) {
+        pageChanged(index);
+      },
+      children: <Widget>[
+        HomeMenu(),
+        Database(),
+        NotificationScreen(),
+        ProfilePage(),
+      ],
+    );
+  }
+
+  void bottomTapped(int index) {
     setState(() {
       bottomSelectedIndex = index;
-      pageController.animateToPage(index, duration: Duration(milliseconds: 500), curve: Curves.ease);
+      pageController.animateToPage(index,
+          duration: Duration(milliseconds: 500), curve: Curves.ease);
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -113,24 +115,33 @@ void bottomTapped(int index) {
                 ),
               ),
               ListTile(
-                  title: Text(
-                    'Talk to Expert',
-                    style: kTileTitleStyle,
-                  ),
+                title: Text('Talk to Expert', style: kTileTitleStyle),
+                dense: true,
+                leading: Icon(
+                  LineIcons.question_circle,
+                  color: iconColor,
+                ),
+                trailing: Icon(Icons.arrow_right),
+                onTap: () {
+                  Navigator.of(context).pushNamed('/query');
+                },
+              ),
+              GreenDivider(),
+              ListTile(
                   dense: true,
+                  title: Text('Answers', style: kTileTitleStyle),
                   leading: Icon(
-                    LineIcons.question_circle,
+                    LineIcons.angellist,
                     color: iconColor,
                   ),
                   trailing: Icon(Icons.arrow_right),
                   onTap: () {
-                    Navigator.of(context).pushNamed('/query');
-                    
+                    Navigator.pushNamed(context, '/answer');
                   }),
               GreenDivider(),
               ListTile(
                   dense: true,
-                  title: Text('Ask For Material', style: kTileTitleStyle),
+                  title: Text('View Products', style: kTileTitleStyle),
                   leading: Icon(
                     LineIcons.pagelines,
                     color: iconColor,
@@ -162,21 +173,23 @@ void bottomTapped(int index) {
                   ),
                   trailing: Icon(Icons.arrow_right),
                   onTap: () {
-                    Navigator.pushNamed(context,'/news');
-                        
+                    Navigator.pushNamed(context, '/news');
                   }),
               GreenDivider(),
               ListTile(
                   dense: true,
-                  title: Text('Schedule', style: kTileTitleStyle),
+                  title: Text('Monitoring', style: kTileTitleStyle),
                   leading: Icon(LineIcons.calendar, color: iconColor),
                   trailing: Icon(Icons.arrow_right),
-                  onTap: () {}),
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Home()));
+                  }),
               GreenDivider(),
               ListTile(
                   dense: true,
                   title: Text('About Us', style: kTileTitleStyle),
-                  leading: Icon(LineIcons.linux, color: iconColor),
+                  leading: Icon(LineIcons.female, color: iconColor),
                   trailing: Icon(Icons.arrow_right),
                   onTap: () {
                     Navigator.push(context,
@@ -208,7 +221,8 @@ void bottomTapped(int index) {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            pageController.animateToPage(2, duration: Duration(milliseconds: 500), curve: Curves.ease);
+            pageController.animateToPage(2,
+                duration: Duration(milliseconds: 500), curve: Curves.ease);
           },
           child: Icon(LineIcons.bell),
           backgroundColor: Colors.orange,
@@ -217,7 +231,7 @@ void bottomTapped(int index) {
         bottomNavigationBar: BubbleBottomBar(
           opacity: .2,
           currentIndex: bottomSelectedIndex,
-          onTap:(index){
+          onTap: (index) {
             pageChanged(index);
             bottomTapped(index);
           },
@@ -263,16 +277,17 @@ void bottomTapped(int index) {
                 ),
                 title: Text("Notifications")),
             BubbleBottomBarItem(
-                backgroundColor: Colors.green,
-                icon: Icon(
-                  LineIcons.user,
-                  color: Colors.black,
-                ),
-                activeIcon: Icon(
-                  LineIcons.user,
-                  color: Colors.green,
-                ),
-                title: Text("Profile"))
+              backgroundColor: Colors.green,
+              icon: Icon(
+                LineIcons.user,
+                color: Colors.black,
+              ),
+              activeIcon: Icon(
+                LineIcons.user,
+                color: Colors.green,
+              ),
+              title: Text("Profile"),
+            ),
           ],
         ),
       ),
@@ -321,11 +336,12 @@ void bottomTapped(int index) {
                 'You will no longer be signed in. Do you wish to continue?'),
             actions: <Widget>[
               FlatButton(
-                  onPressed: () {
-                    signOut();
-                    _dismissDialog();
-                  },
-                  child: Text('Yes')),
+                onPressed: () {
+                  signOut();
+                  _dismissDialog();
+                },
+                child: Text('Yes'),
+              ),
               FlatButton(
                 onPressed: () {
                   _dismissDialog();

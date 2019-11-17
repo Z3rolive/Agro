@@ -6,3 +6,5 @@ const String NewsRoute='/news';
 const String LibraryRoute='/library';
 const String AboutRoute='/about';
 const String QueryRoute='/query';
+const String AnswerRoute='/answer';
+const String MonitorRoute='/monitoring';

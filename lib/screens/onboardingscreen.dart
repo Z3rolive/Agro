@@ -1,5 +1,5 @@
-import 'package:agro/router_constants.dart';
-import 'package:agro/sharedloginregister.dart';
+import 'package:agro/routes/router_constants.dart';
+import 'package:agro/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:agro/constants/constant.dart';
@@ -14,9 +14,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final pageList = [
     PageModel(
         color: const Color(0xFF678FB4),
-        heroAssetPath: 'assets/hotels.png',
+        heroAssetPath: 'assets/Header.png',
         title: Text(
-          'Hotels',
+          'Ask queries',
           style: TextStyle(
             fontWeight: FontWeight.w800,
             color: Colors.white,
@@ -24,7 +24,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           ),
         ),
         body: Text(
-          'All hotels and hostels are sorted by hospitality rating',
+          'We have experts available to support and suggest you on your issue.',
           textAlign: TextAlign.center,
           style: TextStyle(
             color: Colors.white,
@@ -34,9 +34,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         iconAssetPath: 'assets/key.png'),
     PageModel(
         color: const Color(0xFF65B0B4),
-        heroAssetPath: 'assets/banks.png',
+        heroAssetPath: 'assets/Header.png',
         title: Text(
-          'Banks',
+          'View Products',
           style: TextStyle(
             fontWeight: FontWeight.w800,
             color: Colors.white,
@@ -44,7 +44,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           ),
         ),
         body: Text(
-            'We carefully verify all banks before adding them into the app',
+            'Products are available on marketplace which you can order and buy at your convenience',
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Colors.white,
@@ -53,14 +53,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         iconAssetPath: 'assets/wallet.png'),
     PageModel(
       color: const Color(0xFF9B90BC),
-      heroAssetPath: 'assets/stores.png',
-      title: Text('Store',
+      heroAssetPath: 'assets/Header.png',
+      title: Text('Documentations',
           style: TextStyle(
             fontWeight: FontWeight.w800,
             color: Colors.white,
             fontSize: 34.0,
           )),
-      body: Text('All local stores are categorized for your convenience',
+      body: Text('Documents are available for particular farms and their methods of farming.',
           textAlign: TextAlign.center,
           style: TextStyle(
             color: Colors.white,
